@@ -5,6 +5,7 @@ iant@golang.org
 The Go frontend currently only works with GCC.  I want to make it more
 portable, but that work is not complete.
 
+（这里的东西也很有趣，讲如何结合 gcc 制作 go 编译器的，现在我想结合 llvm，下面的可以先不去深究。TODO-ZZ）
 
 Go frontend as part of GCC
 --------------------------

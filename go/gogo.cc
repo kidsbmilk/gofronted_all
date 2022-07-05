@@ -1062,6 +1062,10 @@ Gogo::create_initialization_function(Named_object* initfn,
   std::vector<Bvariable*> vars;
   this->backend()->block(fndecl, NULL, vars, pkg_loc, pkg_loc);
 
+  // 其实 gofrontend 最初设计的就非常好，只要实现相应的 backend，并在解析过程中使用相应的 backend 去生成相应的 ir 即可，
+  // 这里就是使用 backend()->function_set_body 即 gollvm/llvm-project/llvm/tools/gollvm/bridge/go-llvm.cpp 
+  // 中的 Llvm_backend::function_set_body 来生成 llvm ir 结构。非常重要！TODO-ZZ
+  // 这就非常棒了，对 go 官方编译器非常了解，又明白 gollvm 中如何从 gofrontend 转为 llvm ir 的，这样就可以在两边同时加日志去对比结果，非常好！TODO-ZZ
   if (!this->backend()->function_set_body(fndecl, code_stmt))
     {
       go_assert(saw_errors());

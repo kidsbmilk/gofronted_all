@@ -6,20 +6,37 @@ This library is intended for use with the Go frontend.
 This library should not be stripped when it is installed.  Go code
 relies on being able to look up file/line information, which comes
 from the debugging info using the libbacktrace library.
+这个库在安装时不应该被剥离。Go 代码依赖于能够查找文件/行信息，这些信息来自使用 libbacktrace 库的调试信息。
 
 The library has only been tested on GNU/Linux using glibc, and on
 Solaris.  It should not be difficult to port to other operating
 systems.
+该库仅在使用 glibc 的 GNU/Linux 和 Solaris 上进行了测试。 移植到其他操作系统应该不难。
 
 Directories:
 
 go
   A copy of the Go library from http://golang.org/, with several
   changes for gccgo.
+  （这个 go 目录直接来自于 go 官方仓库，只做了一些适合 gccgo 的修改。注意这里！TODO-ZZ）
 
 runtime
   Runtime functions, written in C, which are called directly by the
   compiler or by the library.
+  运行时函数，用 C 编写，由编译器或库直接调用。
+  （这里的 runtime，跟 go/runtime 好像区别非常大，我猜想的是：前者只是一些简单的编译器运行时调用的方法，而后者是 go 程序运行时的内容，比如内存分配、gc、调度器等，再验证下猜想？TODO-ZZ）
+
+misc
+  这个 misc 目录同步自 go 官方库：go/misc 目录，不过只保留了 cgo，其他的像 android、arm、chrome、ios 等平台的应用没有保留。
+
+问题：
+  1. go 目录下的文件在哪里起作用的？是在编译中、链接中，还是在运行中呢？猜想：我理解应该是在链接中、运行中起作用。gccgo 或者 llvmgo compiler 将用户源码编译后转为各种函数调用，同时，编译器也会编译 go 目录下的文件成为二进制文件，之后，将用户源码编译出来的文件跟 go 目录下编译出来的文件进行链接，成功真正的可执行文件。然后，在运行中，go 目录下的文件实现的运行时逻辑就会真正起作用，用户代码也就执行起来了。再验证下猜想？TODO-ZZ
+  其实 gccgo 或者 llvmgo 编译器编译 go 特性也非常好理解了，都是将源码转为函数调用，之后链接运行时模块的方法实现，最终代码能运行起来。
+  2. 链接部分的代码一定要细看了，不过这都是建立在对二进制非常了解的情况下。
+  3. 要对比的东西非常多，结合 go 官方编译的流程细节与 gollvm 的实现细节做对比吧。
+  4. llvmgo 编译器，编译运行时代码是没问题的，运行时代码都是非常直白的代码，运行时代码算是用户代码的一个框架、包装，运行时代码应该不涉及到逃逸变量的收集之类的吧？代码上有什么能体现的吗？看看编译产物的区就知道了！（go gc 能对运行时的 gc 代码进行垃圾收集吗，应该不用的，因为运行时的 gc 代码开辟的内存空间相当于是另外一份自己用的堆，用户代码、程序在运行中，一直会存在，或者是运行时的 gc 自己控制所使用的内存的申请与释放。所以，只有用户代码才会被 gc。概念果然是越想越明白。）有没有可能是，运行时 gc 代码在编译时，也做了变量的收集、逃逸分析之类的，输出的二进制里也有相应的区块数据等，只不过，在链接到用户程序时，在运行时，没有额外的 "gc" 框架去扫描运行时 gc 代码的编译产物，所以不对运行时 gc 进行垃圾收集，而用户程序是运行在运行时框架里的，所以运行时 gc 能对用户代码进行垃圾收集。从另外的角度来讲，运行时代码是高手编写的，一般很少出问题，像 c/cpp 代码一样，能手动释放内存，那感觉不太对，go gc 代码是 go 语言写的，有什么主动释放内存的代码、接口、方法吗？有的！runtime 模块里有 Alloc() 和 free()。https://studygolang.com/articles/9721，非常重要！TODO-ZZ
+  5. 公司里的项目编译环境无法搭建，找一些开源 go 项目，用 llvmgo 编译试试，另外，对比下 go 官方编译器编译出来的产物。没有一个好用的环境，阻碍我前进步伐。
+  6. ...
 
 Contributing
 ============

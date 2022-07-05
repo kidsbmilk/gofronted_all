@@ -6,10 +6,12 @@ Last update 15 June 2014
 This is a compiler frontend for the [Go programming language](http://golang.org/). The frontend was originally developed at Google, and was released in November 2009. It was originally written by Ian Lance Taylor.
 
 It was originally written for [GCC](http://gcc.gnu.org/). As of this writing it only supports GCC, but the GCC support has been separated from the rest of the frontend, so supporting another compiler is feasible.
+（这里说的非常明白，最初 gofrontend 是给 gcc 使用的前端，后来也可以结合其他的后端进行 go 编译器的开发。）
 
 The go subdirectory holds the frontend source code. This is mirrored to the gcc/go subdirectory in the GCC repository.
 
 The libgo subdirectory holds the library source code. This is a copy of the main Go library with various changes appropriate for this compiler. The main Go library is hosted at <http://go.googlesource.com/go>, in the src directory. The libgo subdirectory is mirrored to the libgo subdirectory in the gcc repository.
+（这个非常重要，libgo 里有大量的 go 代码，其实就是跟 go 官方的库同步的，只不过为了跟 llvm 配合，做了一些小修改，可以对比 go 官方代码看看。TODO-ZZ）
 
 ## Legal Matters
 

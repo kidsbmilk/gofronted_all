@@ -3,20 +3,23 @@ See ../README.
 The frontend is written in C++.  It can only be used in conjunction
 with a full compiler backend.  Currently the backend interface has
 been implemented with GCC (known as gccgo) and with LLVM (known as
-GoLLVM).
+GoLLVM).（注意这里的说明，解释的非常清楚！TODO-ZZ）
 
 The frontend lexes and parses the input into an IR specific to this
 frontend known as gogo.  It then runs a series of passes over the
-code.
+code.（注意这里，gofrontend 得到的 ir 称为 gogo。）
 
 Finally it converts gogo to the backend IR.  This is done via the
 interface described in backend.h.  The backend must implement that
 interface.  When used with GCC, the interface is implemented in
-gcc/go/go-gcc.cc.
+gcc/go/go-gcc.cc.（注意这里的说明，非常清楚，如果结合的后端是 gcc，则使用的 backend 是 gcc/go/go-gcc.cc，
+如果结合的后端是 llvm，像 gollvm 中的实现，使用的 backend 是：llvm/tools/gollvm/bridge/go-llvm.cpp，非常重要！TODO-ZZ）
 
 Source locations are represented using the interface described in
 go-linemap.h.  The backend is expected to provide a header file
 go-location.h that defines a Location type.
+
+源位置使用 go-linemap.h 中描述的接口表示。 后端应提供定义 Location 类型的头文件 go-location.h。（仔细看下？TODO-ZZ）
 
 The frontend does not start by itself.  It expects something to call
 go_create_gogo passing in a Backend and a Linemap, as well as other
@@ -25,13 +28,20 @@ passing in the input files.  Finally, a call to go_write_globals will
 cause all global definitions to be written out via the Backend
 interface.
 
+（这里有些细节，还需要再看看 TODO-ZZ）
+前端不会自行启动。 它期望调用 go_create_gogo 传入后端和 Linemap 以及其他选项。 然后它期望调用 go_parse_input_files 传递输入文件。 最后，调用 go_write_globals 将导致所有全局定义通过后端接口写出。（我之前没看这里的 README，先是看了 gollvm 源码，也明白这里说的。自己还是很浅薄，如果一开始来看这个，会更快理解源码。另外，人家写的非常结构化、可插拔，非常好用，佩服！TODO-ZZ）
+
 The backend is expected to provide the functions defined at the
 bottom of go-diagnostics.h: go_be_error_at, etc.  These will be used
 for error messages.
 
+后端预计会提供在 go-diagnostics.h 底部定义的函数：go_be_error_at 等。这些将用于错误消息。
+
 This compiler works, but the code is a work in progress.  The frontend
 pays little attention to its memory usage and rarely frees any memory.
 The code could use a general cleanup which we have not had time to do.
+
+该编译器可以工作，但代码仍在进行中。前端很少注意它的内存使用，很少释放任何内存。代码可以使用我们没有时间做的一般清理。
 
 Contributing
 =============

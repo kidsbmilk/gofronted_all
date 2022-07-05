@@ -24,6 +24,7 @@ void
 go_create_gogo(const struct go_create_gogo_args* args)
 {
   go_assert(::gogo == NULL);
+  // 在 CompileGoImpl::initBridge() 中调用 go_create_gogo 时将 bridge_ 作为参数传入 gofrontend 并进行关联。
   ::gogo = new Gogo(args->backend, args->linemap, args->int_type_size,
 		    args->pointer_size);
 

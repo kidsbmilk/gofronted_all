@@ -7,11 +7,17 @@
 # This script merges changes from the master copy of the Go library
 # into the libgo library.  This does the easy stuff; the hard stuff is
 # left to the user.
+# 此脚本将 Go 库主副本中的更改合并到 libgo 库中。这很简单；困难的东西留给用户。
+#（从这里可以看出，gofrontend/libgo 主要是同步来自于 go 官方的代码。非常重要！TODO-ZZ）
+#（之前在我没有看 gollvm 实现之前，我的一个想法是：结合 go 官方里的代码，以及 llvm 的底层优化，其他人家 gollvm 已经在这么做了。TODO-ZZ）
+#（或许，这里已经能解决我心中的疑惑了：gollvm 是如何处理运行时与 gc 的？TODO-ZZ）
 
 # The file MERGE should hold the Git revision number of the last
 # revision which was merged into these sources.  Given that, and given
 # the current sources, we can run the usual diff3 algorithm to merge
 # all changes into our sources.
+# 文件 MERGE 应该包含合并到这些源中的最后一个修订的 Git 修订号。
+# 鉴于此，并给定当前源，我们可以运行通常的 diff3 算法将所有更改合并到我们的源中。
 
 set -e
 

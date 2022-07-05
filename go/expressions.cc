@@ -1074,7 +1074,7 @@ Var_expression::do_get_backend(Translate_context* context)
     go_unreachable();
 
   Bexpression* ret =
-      context->backend()->var_expression(bvar, loc);
+      context->backend()->var_expression(bvar, loc); // 使用 gollvm/bridge 将表达式转为 llvm ir，非常重要！TODO-ZZ
   if (is_in_heap)
     ret = context->backend()->indirect_expression(btype, ret, true, loc);
   return ret;
